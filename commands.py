@@ -1,10 +1,20 @@
-import os, fileinput, paving, math
+import os, fileinput, paving, math, random, numpy
 
+# N random points to calibrate the robot
+def randomPoints(sampleSize):
+    k = 10
+    q = [0,180]
+    cmds = []
+    t = [0 for _ in range(10)]
 
-def degree(x):
-    pi=math.pi
-    degree=(x*180)/pi
-    return degree
+    for i in range(0,sampleSize):
+        t[i] = random.uniform(0, 2*math.pi)
+
+        q[0] += k * numpy.cos(t[i])
+        q[1] += k * numpy.sin(t[i])
+
+        cmds.extend(q)
+    return(cmds)
 
 def modify_poses_mbx(x):
 

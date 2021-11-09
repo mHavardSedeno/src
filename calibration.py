@@ -27,8 +27,8 @@ def f_r(architecture,pose,command):
     [q1,q2] = numpy.radians(command)
     #    -l3^2 + (L1 + x1 - l1*cos(q1*pi/180))^2 + (x2 - l1*sin(q1*pi/180))^2 = 0;
     #   -l4^2 + (L2 + x1 - l2*cos(q2*pi/180))^2 + (x2 - l2*sin(q2*pi/180))^2
-    f1 = pow(x1 - a1[0] + l11 * numpy.cos(q1),2) + pow(x2 - a1[1] + l11*numpy.sin(q1), 2) - pow(l12,2)
-    f2 = pow(x1 - a2[0]+l21*numpy.cos(q1),2) + pow(x2 - a2[1] + l21*numpy.sin(q2), 2) - pow(l22,2)
+    f1 = pow((x1 - a1[0] + l11 * numpy.cos(q1)), 2) + pow((x2 - a1[1] + l11 * numpy.sin(q1)), 2) - pow(l12,2)
+    f2 = pow((x1 - a2[0] + l21 * numpy.cos(q1)), 2) + pow((x2 - a2[1] + l21 * numpy.sin(q2)), 2) - pow(l22,2)
     return [f1,f2]
 
 # Actuation of the robot in order to generate measures for calibration
@@ -39,7 +39,6 @@ def make_measurements(r,commands,col='black',mar='*'):
     measures=[]
     print('   Taking measures ...')
     for q in commands:
-        print("q : " + str(q))
         r.actuate(q)
         x = r.measure_pose()
         r.ax.plot([x[0]],[x[1]],color=col,marker=mar)
@@ -64,7 +63,7 @@ def calibrate(kinematic_functions,nominal_architecture,measures):
         print(a)
         err=[]
         for (x,q) in measures:
-            print(" --> Mesure : " + str(x)+", "+str(q))
+            print("x : " + str(x) + ", q : " + str(q))
             for fi in kinematic_functions(a,x,q):
                 err.append(fi)
         return err
