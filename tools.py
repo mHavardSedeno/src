@@ -1,5 +1,11 @@
 import os, fileinput, paving, math, random, numpy
 
+#######################
+#---- CALIBRATION ----#
+#######################
+
+#-- tools we used for the calibration --#
+
 # N random points to calibrate the robot
 def randomPoints(sampleSize):
     k = 10
@@ -16,6 +22,23 @@ def randomPoints(sampleSize):
 
         cmds.extend(q)
     return(cmds)
+
+# We made this function
+def generate_points(sampleSize):
+    cmds = randomPoints(sampleSize)
+
+    # create a table associating the commands to the resulting poses
+    com = []
+    for i in range(0,len(cmds),2):
+        com.append([cmds[i], cmds[i+1]])
+
+    return(com)
+
+
+
+
+
+
 
 def modify_poses_mbx(x):
 

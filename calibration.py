@@ -1,3 +1,8 @@
+# From A.Goldsztejn and C.Jermann
+
+# We modified the kinematic function to match our 5R robot
+# We use the "make_measurements" and "calibrate" functions during the calibration
+
 #######################################################
 # TwoBars robot demo
 import math
