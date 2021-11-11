@@ -1,4 +1,4 @@
-import math, robot, commands
+import math, robot, tools, pathPlanning
 import numpy as np
 from matplotlib import pyplot
 
@@ -35,22 +35,24 @@ for i in range(len(t)):
 
 print(poses[0])
 
-cmds = commands.find_commands(poses)
+cmds = tools.find_commands(poses, 0)
 print(cmds)
 
-# We go to the first pose
-r.actuate(cmds[0])
-# and start drawing
-r.pen_down()
 
-# then we go through all the poses
-for (x,y) in cmds:
-    r.actuate([x,y])
-
-# and return to the beginning of the circle
-r.actuate(cmds[0])
-r.pen_up()
-input("Press [ENTER] to continue ...")
-
-# and to the initial position
-r.go_home()
+pathPlanning.pathFollowing(cmds, True)
+# # We go to the first pose
+# r.actuate(cmds[0])
+# # and start drawing
+# r.pen_down()
+#
+# # then we go through all the poses
+# for (x,y) in cmds:
+#     r.actuate([x,y])
+#
+# # and return to the beginning of the circle
+# r.actuate(cmds[0])
+# r.pen_up()
+# input("Press [ENTER] to continue ...")
+#
+# # and to the initial position
+# r.go_home()

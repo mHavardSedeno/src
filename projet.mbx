@@ -17,10 +17,8 @@ variables
 
 constraints
     for i=1:27;
-        (x-A(i)(1))^2 + (y-A(i)(2))^2 >= (A(i)(3))^2;     
+        (x-A(i)(1))^2 + (y-A(i)(2))^2 >= (A(i)(3))^2;
     end
-    
-
     
     // kinematic equations
     -l3^2 + (L + x - l1*cos(q1*pi/180))^2 + (y - l1*sin(q1*pi/180))^2 = 0;

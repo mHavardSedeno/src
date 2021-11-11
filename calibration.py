@@ -27,8 +27,8 @@ def f_r(architecture,pose,command):
     [q1,q2] = numpy.radians(command)
     #    -l3^2 + (L1 + x1 - l1*cos(q1*pi/180))^2 + (x2 - l1*sin(q1*pi/180))^2 = 0;
     #   -l4^2 + (L2 + x1 - l2*cos(q2*pi/180))^2 + (x2 - l2*sin(q2*pi/180))^2
-    f1 = pow((x1 - a1[0] + l11 * numpy.cos(q1)), 2) + pow((x2 - a1[1] + l11 * numpy.sin(q1)), 2) - pow(l12,2)
-    f2 = pow((x1 - a2[0] + l21 * numpy.cos(q1)), 2) + pow((x2 - a2[1] + l21 * numpy.sin(q2)), 2) - pow(l22,2)
+    f1 = pow((x1 - a1[0] - l11 * numpy.cos(q1)), 2) + pow((x2 - a1[1] - l11 * numpy.sin(q1)), 2) - pow(l12,2)
+    f2 = pow((x1 - a2[0] - l21 * numpy.cos(q2)), 2) + pow((x2 - a2[1] - l21 * numpy.sin(q2)), 2) - pow(l22,2)
     return [f1,f2]
 
 # Actuation of the robot in order to generate measures for calibration
@@ -60,10 +60,10 @@ from scipy.optimize import least_squares
 def calibrate(kinematic_functions,nominal_architecture,measures):
     # error function ----
     def errors(a):
-        print(a)
+        # print(a)
         err=[]
         for (x,q) in measures:
-            print("x : " + str(x) + ", q : " + str(q))
+            # print("x : " + str(x) + ", q : " + str(q))
             for fi in kinematic_functions(a,x,q):
                 err.append(fi)
         return err
