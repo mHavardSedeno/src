@@ -1,4 +1,6 @@
-import tools, calibration, robot, paving, print_functions, pathPlanning
+import tools, calibration, pathPlanning, pathFollowing
+import math, robot, paving
+import numpy as np
 from matplotlib import pyplot
 from scipy.sparse.csgraph import dijkstra
 
@@ -34,7 +36,7 @@ def part_calibration(r):
     print('   ---------------------------------------------------------------------------------------------\n')
     print("   --> Calibrated architecture is : " + str(calibrated))
 
-
+    return(calibrated)
 
 
 ###########################
@@ -42,46 +44,42 @@ def part_calibration(r):
 ##########################
 
 def part_following(r):
-    return 0
+
+    # draw the path to follow -- a circle centered at (0, −20) with radius 5 -- in dotted line
+    centre_x = 0
+    centre_y = -20
+    radius = 5
+
+    path = pyplot.Circle((centre_x,centre_y),radius,color='.5',fill=False, linestyle='dotted')
+    r.ax.add_artist(path)
+    r.refresh()
+
+
+    # Discretize t in N points
+    N = 100
+    # t in [0,2pi]
+    t = []
+    nextT = 0
+
+    for i in range(N):
+        nextT += 1/N *2*math.pi
+        t.append(nextT)
+
+    poses = []
+
+    for i in range(len(t)):
+        pose_x  = centre_x + (radius * np.cos(t[i]))
+        pose_y  = centre_y + (radius * np.sin(t[i]))
+        poses.append([pose_x, pose_y])
+
+    cmds = tools.find_commands(poses, 0)
+
+    pathFollowing.pathFollowing(r, cmds, True)
+
 
 ##########################
 #---- PATH PLANNING ----#
 #########################
-
-
-def compute_center(box):
-    x = (box[0] + box[1])/2
-    y = (box[2] + box[3])/2
-    return (x,y)
-
-# PATH FOLLOWING FUNCTION #
-def pathFollowing(commands, loop=False):
-
-    print("\n\t\t ############################################")
-    print(" \t\t ############## PATH FOLLOWING ###############")
-    print("\t\t ##############################################\n")
-
-    print("   Launching the path following procedure...")
-    # TODO Préciser les paramètres donnés dans l'énoncé
-
-    # We go to the first pose
-    r.actuate(commands[0])
-    # and start drawing
-    r.pen_down()
-
-    # then we go through all the poses
-    for (x,y) in commands:
-        r.actuate([x,y])
-
-    # if we want the drawing to go back to the first pose -- as in a circle for instance --
-    if loop==True:
-        r.actuate([commands[0]])
-
-    r.pen_up()
-    input("Press [ENTER] to continue ...")
-
-    # and to the initial position
-    r.go_home()
 
 def part_planning(r):
 
@@ -116,31 +114,45 @@ def part_planning(r):
     commands = tools.find_commands(poses, 2)
 
     # Execute the path following the commands
-    pathFollowing(commands, 2)
+    pathFollowing.pathFollowing(r, commands, 2)
 
 
 ##################
 #----- MAIN -----#
 ##################
 
-part = input("Choose the part you want to execute : \n 1 for Calibration \n 2 for Path following and \n 3 for Path planning\n")
+part = input("Enter the part you want to execute : \n1 for Calibration \n2 for Path following and \n3 for Path planning\n0 to execute everything with the two architectures")
 while part not in ('1', '2', '3', '0'):
     print("Wrong input, please choose between 0,1,2 and 3 : ")
     part = input("Choose the part you want to execute : \n 1 for Calibration \n 2 for Path following and \n 3 for Path planning")
 
 # Creation of the robot
-r=robot.FiveBars([-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8],0,2, eps_cmd=5)
 architecture = [-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8]
+r=robot.FiveBars([-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8],0,2, eps_cmd=5)
 
-if part=='1':
-    part_calibration(r)
-elif part=='2':
-    part_following(r)
-elif part=='3':
-    part_planning(r)
-elif part=='0':
-    part_calibration(r)
+if part=='0':
+    print("--> WORKING WITH THE NOMINAL ARCHITECTURE:")
     part_following(r)
     part_planning(r)
+    print("--> WORKING WITH THE CALIBRATED ARCHITECTURE:")
+    part_following(rc)
+    part_planning(rc)
+elif part=='1':
+    part_calibration(r)
 else:
-    print("error: wrong input")
+    archi = input("Enter the chosen architecture : \n0 for the nominal architecture\n1 for the calibreated architecture")
+    while archi not in ('0', '1'):
+        archi = input("Enter the chosen architecture : \n0 for the nominal architecture\n1 for the calibreated architecture")
+
+    if archi=='0':
+        if part=='2':
+            part_following(r)
+        elif part=='3':
+            part_planning(r)
+    elif archi=='1':
+        architectureCali = part_calibration(r)
+        rc = robot.FiveBars(architectureCali ,0,2, eps_cmd=5)
+        if part=='2':
+            part_following(rc)
+        elif part=='3':
+            part_planning(rc)

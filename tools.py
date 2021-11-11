@@ -35,15 +35,8 @@ def generate_points(sampleSize):
     return(com)
 
 
-
-
-
-
-
 def modify_poses_mbx(x):
 
-    # Si on a le temps :
-    # Modifier toujours le même fichier pour éviter d'en avoir 100 000 à la fin
     with open('mbx/5R.mbx', 'r') as input_file, open('mbx/5R_tmp.mbx', 'w') as output_file:
         for line in input_file:
             if 'x1 =' in line:
@@ -54,8 +47,6 @@ def modify_poses_mbx(x):
                 output_file.write(line)
 
 def modify_commands_mbx(x,i):
-
-    print("x = " + str(x))
 
     # Si on a le temps :
     # Modifier toujours le même fichier pour éviter d'en avoir 100 000 à la fin
@@ -69,8 +60,6 @@ def modify_commands_mbx(x,i):
                 output_file.write(line)
 
 def modify_archi_mbx(archi):
-
-    print("x = " + str(archi))
 
     with open('projet1.mbx', 'r') as input_file, open('projet_calibrated.mbx', 'w') as output_file:
         for line in input_file:
@@ -101,8 +90,7 @@ def find_commands(list, index):
     commands = []
 
     for i in list:
-        print("list : ")
-        print(i)
+
         # print('Reading the pose ' + str(i) +' .... ')
         modify_poses_mbx(i)
 
@@ -125,7 +113,6 @@ def find_commands(list, index):
 
 def find_poses(list):
 
-    print(list)
     poses = []
     index = 0
 
