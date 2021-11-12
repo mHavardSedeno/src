@@ -135,6 +135,9 @@ if part=='0':
     part_following(r)
     part_planning(r)
     print("--> WORKING WITH THE CALIBRATED ARCHITECTURE:")
+    architectureCali = part_calibration(r)
+    rc = robot.FiveBars(architectureCali ,0,2, eps_cmd=5)
+    print(rc._architecture)
     part_following(rc)
     part_planning(rc)
 elif part=='1':
@@ -153,6 +156,7 @@ else:
         architectureCali = part_calibration(r)
         rc = robot.FiveBars(architectureCali ,0,2, eps_cmd=5)
         if part=='2':
+            print(rc._architecture)
             part_following(rc)
         elif part=='3':
             part_planning(rc)
