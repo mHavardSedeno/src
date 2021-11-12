@@ -1,0 +1,22 @@
+// ibexsolve 5R.mbx
+constants
+
+    // architecture parameters
+    l1 = 
+    // pose parameters
+    x1 = 5;
+    x2 = 5;
+
+variables 
+
+    // command parameters
+    q1 in [-180,180];
+    q2 in [0,360];
+
+constraints
+
+    // kinematic equations
+    -l3^2 + (L1 + x1 - l1*cos(q1*pi/180))^2 + (x2 - l1*sin(q1*pi/180))^2 = 0;
+    -l4^2 + (L2 + x1 - l2*cos(q2*pi/180))^2 + (x2 - l2*sin(q2*pi/180))^2 = 0;
+
+end

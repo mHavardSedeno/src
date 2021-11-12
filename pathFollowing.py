@@ -1,15 +1,17 @@
+# Mathilde HAVARD-SEDENO
+# M2 ORO
+
 import math, robot, tools, pathPlanning
 import numpy as np
 from matplotlib import pyplot
 
 def pathFollowing(r, commands, loop=False):
 
-    print("\n\t\t ############################################")
-    print(" \t\t ############## PATH FOLLOWING ###############")
-    print("\t\t ##############################################\n")
+    print("\n\t\t###########################################")
+    print("\t\t ############## PATH FOLLOWING ###############")
+    print("\t\t #############################################\n")
 
     print("   Launching the path following procedure...")
-    # TODO Préciser les paramètres donnés dans l'énoncé
 
     # We go to the first pose
     r.actuate(commands[0])

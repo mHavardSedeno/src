@@ -1,3 +1,6 @@
+# Mathilde HAVARD-SEDENO
+# M2 ORO
+
 import tools, calibration, pathPlanning, pathFollowing
 import math, robot, paving
 import numpy as np
@@ -10,6 +13,7 @@ from scipy.sparse.csgraph import dijkstra
 #######################
 
 def part_calibration(r):
+
     # Generate N points to calibrate the robot
     sampleSize = 50
     print("\n\t\t #########################################")
@@ -43,7 +47,7 @@ def part_calibration(r):
 #---- PATH FOLLOWING ----#
 ##########################
 
-def part_following(r):
+def part_following(r, archi=[-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8]):
 
     # draw the path to follow -- a circle centered at (0, −20) with radius 5 -- in dotted line
     centre_x = 0
@@ -56,7 +60,7 @@ def part_following(r):
 
 
     # Discretize t in N points
-    N = 100
+    N = 50
     # t in [0,2pi]
     t = []
     nextT = 0
@@ -72,7 +76,7 @@ def part_following(r):
         pose_y  = centre_y + (radius * np.sin(t[i]))
         poses.append([pose_x, pose_y])
 
-    cmds = tools.find_commands(poses, 0)
+    cmds = tools.find_commands(archi, poses, 0)
 
     pathFollowing.pathFollowing(r, cmds, True)
 
@@ -81,7 +85,7 @@ def part_following(r):
 #---- PATH PLANNING ----#
 #########################
 
-def part_planning(r):
+def part_planning(r, archi=[-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8]):
 
     p = paving.Paving()
     p.from_covfile("projet1.cov")
@@ -111,10 +115,10 @@ def part_planning(r):
     pathPlanning.draw_path(r, p, path)
 
     # Retrieve the commands given the poses determined above
-    commands = tools.find_commands(poses, 2)
+    commands = tools.find_commands(archi, poses, 2)
 
     # Execute the path following the commands
-    pathFollowing.pathFollowing(r, commands, 2)
+    pathFollowing.pathFollowing(r, commands, 0)
 
 
 ##################
@@ -128,7 +132,7 @@ while part not in ('1', '2', '3', '0'):
 
 # Creation of the robot
 architecture = [-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8]
-r=robot.FiveBars([-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8],0,2, eps_cmd=5)
+r=robot.FiveBars([-22.5, 0, 22.5, 0, 17.8, 17.8, 17.8, 17.8], 0 ,2, eps_cmd=5)
 
 if part=='0':
     print("--> WORKING WITH THE NOMINAL ARCHITECTURE:")
@@ -136,10 +140,8 @@ if part=='0':
     part_planning(r)
     print("--> WORKING WITH THE CALIBRATED ARCHITECTURE:")
     architectureCali = part_calibration(r)
-    rc = robot.FiveBars(architectureCali ,0,2, eps_cmd=5)
-    print(rc._architecture)
-    part_following(rc)
-    part_planning(rc)
+    part_following(r, architectureCali)
+    part_planning(r, architectureCali)
 elif part=='1':
     part_calibration(r)
 else:
@@ -154,9 +156,7 @@ else:
             part_planning(r)
     elif archi=='1':
         architectureCali = part_calibration(r)
-        rc = robot.FiveBars(architectureCali ,0,2, eps_cmd=5)
         if part=='2':
-            print(rc._architecture)
-            part_following(rc)
+            part_following(r, architectureCali)
         elif part=='3':
-            part_planning(rc)
+            part_planning(r, architectureCali)
